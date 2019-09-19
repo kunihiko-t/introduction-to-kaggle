@@ -414,3 +414,102 @@ $$
 ---
 
 ## Google Colaboratoryを使おう
+
+---
+
+## 転置について
+
+---
+
+## 線形回帰で特徴量が複数あるとき
+
+
+例えば身長、体重、年齢みたいな３つの特徴量を線形回帰に使いたいとすると
+
+i番目のサンプルのj番目の特徴量をどう表すのか？
+
+<br/>
+
+$$
+
+x^{(i)}= i番目のサンプル
+
+$$
+
+<br/>
+
+
+$$
+x^{(i)}_j= i番目のサンプルのj番目の特徴量
+$$
+
+--- 
+
+## 仮説関数の変更
+
+今まで使っていたのは
+
+<br/>
+
+$$
+h_\theta(x) = \theta_0 + \theta_1x
+$$
+
+<br/>
+
+これを複数の特徴量に対応させるとこうなる
+
+<br/>
+
+$$
+h_\theta(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \theta_3x_3 + ..... + \theta_nx_n
+$$
+
+<br/>
+
+ここでx0を1とすると
+
+$$
+  x =
+  \left[
+    \begin{array}{rrr}
+      x_0 \\
+      x_1 \\
+      x_2 \\
+      ... \\
+      x_n \\
+    \end{array}
+  \right]
+  
+  \in\mathbb{R}^{n+1}
+  ,
+  \theta =
+  \left[
+    \begin{array}{rrr}
+      \theta_0 \\
+      \theta_1 \\
+      \theta_2 \\
+      ... \\
+      \theta_n \\
+    \end{array}
+  \right]
+  
+  \in\mathbb{R}^{n+1}
+$$
+
+<br/>
+
+$$
+h_\theta(x) = \theta_0x_0 + \theta_1x_1 + \theta_2x_2 + \theta_3x_3 + ..... + \theta_nx_n
+$$
+
+<br/>
+
+$$
+= \theta^Tx
+$$
+
+<br/>
+
+Tは「転置(transpose)」と呼ぶ
+
