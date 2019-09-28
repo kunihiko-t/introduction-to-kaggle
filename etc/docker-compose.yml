@@ -1,0 +1,12 @@
+version: '2.3'
+services:
+  app:
+    image:  kaggle/python-gpu-build:latest
+    volumes:
+      - ./notebooks/:/notebooks
+      - ./input/:/input
+      - ./src/:/src
+    runtime: nvidia
+    ports:
+      - "8888:8888"
+    command: bash -c "export LD_LIBRARY_PATH=/usr/local/cuda/lib64; pip install jupyter_contrib_nbextensions; pip install jupyter_nbextensions_configurator; jupyter contrib nbextension install --user; jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8888 --no-browser --allow-root"

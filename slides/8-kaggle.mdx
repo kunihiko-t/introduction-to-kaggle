@@ -1,0 +1,99 @@
+<!-- sectionTitle: Kaggle -->
+
+
+## Kaggle
+
+---
+
+## とりあえず既に終了しているコンペで遊んでみる
+ 
+- https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition
+
+- Descriptionを読むとどんなコンペなのかが書いてある。
+ - これは犬、猫の画像からどっちかを判定するのが目的
+
+- Evaluationにはモデルの評価指標が書いてある。今回はLoggLoss
+ - 検索するとどういう関数なのかだいたい出てくる
+ 　- https://qiita.com/exp/items/1c6c9a3fae2d97bfa0c7
+ 
+ ## データを確認してみる
+ 
+ - Dataタブでデータを確認できる
+  - ブラウザ上からは確認がめんどくさいのでkaggleのCLIを使ってダウンロードする
+  
+- pip install kaggle
+
+- Kaggleの右上のアイコンからMy Profile -> 右のほうの...からAccount -> Create new API Tokenをクリック
+ - kaggle.jsonをダウンロードして~/.kaggle/kaggle.jsonに配置する
+ - jupyternotebookで
+  - !mkdir input
+  - !cd input && kaggle competitions download -c dogs-vs-cats-redux-kernels-edition
+  - !cd input && unzip train.zip test.zip
+
+
+```python
+
+from IPython.display import Image, display
+# 犬
+Image('input/train/dog.200.jpg')
+
+# 猫 ブロックを分けないと表示されない
+Image('input/train/cat.100.jpg')
+
+
+## ここからもブロック分ける
+import pandas as pd
+
+## どんな感じで提出するか確認
+df = pd.read_csv('input/sample_submission.csv')
+df.head()
+
+```
+   
+---
+
+
+## とりあえずデータ確認はできたので次どうするか
+
+- たぶんガチ勢ならそのままEDA(Explanatory Data Analysis)とかやってモデル作るんだろうけど、とりあえず他人のPublic Kernelを読もう。（notebookタブ）
+- Vote数が多くて、使用言語とかフレームワークが自分の使いたいものに近いのを選ぶと良い
+  - Deep Learning系はだいたいKeras+TensorflowかPyTorch。新しめのアルゴリズムの実装が早いとか色々あってPyTorchが人気上昇中っぽい。fast.aiが公開しているライブラリなんかもある。
+  - 今回はこのへんを読んで実際にsubmitしてみよう
+    - https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/notebooks
+    - https://www.kaggle.com/sarvajna/dogs-vs-cats-keras-solution
+  - Kaggle上で実行したい場合は右上に出てるCopy & Editを押せば自分のKernelとしてForkして実行できる
+    - コンペの中にはKernel Onlyのものもあり、KaggleのSandbox環境下ですべて実行して結果を提出するものもある  
+
+- 今回は画像系なのでCNNでやる。CNNを行う時は学習済みモデルを使って調整していくのが良い（学習済みモデルは色んなものがあるので検索してみるといいかも）
+- むかし書いた記事 https://blog.valletta.io/blog/2018-07-05-dogs-vs-cats-redux%E3%82%92%E8%A7%A3%E3%81%84%E3%81%A6kaggle%E3%81%ABsubmit%E3%81%97%E3%81%9F%E6%99%82%E3%81%AE%E3%83%A1%E3%83%A2/
+
+---
+
+## Leaderboard
+
+- 現在の順位を確認できる。ゲームとか好きな人にはおなじみのやつ。
+- publicとprivateがあり、コンペ開催期間はPublic Leaderboardのみが公開され、コンペが終了時にPrivate Leaderboardの評価が行われ順位が決定される
+ - このへん読むといいかも。 https://kaggler-ja-wiki.herokuapp.com/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F
+
+![LeaderBoard](https://cl.ly/667c55901e16/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-28%25252018.41.14.png)
+
+
+---
+
+## その他
+
+- Rulesに細かいルールが書いてある。外部データ利用禁止とかそういうやつ
+- Discussionで重要なことが議論されてることが多いのでコンペ期間中は要チェック
+- 提出結果はMy Submissionのところに出てくる
+
+![Submit](https://cl.ly/b3f8ba04d464/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-28%25252018.36.04.png)
+
+---
+
+## おわり
+
+- やってると色々と分からないことが出てくると思うけど、このへんの動画が参考になるし、書籍もいっぱい出てるので買ってみるといいかも
+ - https://www.coursera.org/specializations/deep-learning
+ - https://www.fast.ai/
+ 
+- グローバルメニューのCompetitionから面白そうなものを選んで参加してみよう

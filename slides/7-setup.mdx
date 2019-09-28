@@ -1,0 +1,191 @@
+<!-- sectionTitle: 環境構築 -->
+
+## 環境構築
+
+- Google ColaboratoryやKaggleのカーネルだけでやってもいいけど遅かったりめんどくさかったりする
+ - スペック不足だったり、カーネルが止まるとファイルシステムもリセットされたり、実行時間に制限があったり
+
+- なのでGCPで環境を構築してそこで実行すると良い
+
+---
+
+## 環境構築 on GCP
+
+- クーポンもらえるので新しくアカウント作るといいかも
+- まだ各種サービスにアクセスしたことがなかったらアクセスしておくとサービス有効化する時間待たなくて良い
+
+---
+
+## 事前準備
+
+- アカウントに対してのGPU割当を申請する(アカウントをアップグレードしないとできない。２営業日ぐらいかかる)
+- GCP用のCLIをインストールしておく
+ - https://cloud.google.com/sdk/downloads?hl=ja
+ - gcloud auth login    
+ - gcloud config set project VALUE
+ - すでにアカウントがある人でログイン中の人は
+  - gcloud auth list
+  - gcloud config set account `ACCOUNT` で切り替えられる
+
+---
+
+- C8 vcpu 30GB RAM
+- GPU: T4
+- CPUとかメモリもいっぱいのほうが環境構築に時間かからない
+- Ubuntu 18.0.4 LTS 50GB SSD
+
+<br/>
+
+![Quota](https://cl.ly/c9032086d6ec/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-24%25252022.06.10.png)
+
+---
+
+![GCP](https://cl.ly/f60663a368c2/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-24%25252021.55.34.png)
+
+---
+
+
+![GCP](https://cl.ly/1f4427306598/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-24%25252021.55.55.png)
+
+---
+
+ハンズオン中はプリエンプティブを使って止まったりするとめんどくさいので普通のインスタンスを使ったほうがいいけど、普段はオンでいいと思う
+
+<br/>
+
+![GCP](https://cl.ly/b14726623827/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-24%25252021.56.01.png)
+
+
+---
+
+使い終わったら止めておこう。ハンズオン終わったらディスクも消してしまおう。
+忘れると結構高い
+
+<br/>
+
+![GCP](https://cl.ly/08a2fa69146d/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-24%25252021.56.40.png)
+
+---
+
+ネットワークの設定でタグをつけておく
+
+![network](https://cl.ly/e57ae3f8873b/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-26%25252020.22.21.png)
+
+---
+
+## ファイアウォールの設定
+
+TCPの8888番をあけておく
+
+![Network](https://cl.ly/99d9d87f0e88/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-26%25252020.20.04.png)
+![Network](https://cl.ly/5ff57e714d5e/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-26%25252020.20.11.png)
+
+---
+
+Compute Engineのインスタンスを作ったらsshで入ってみる
+- gcloud compute instances list
+- gcloud compute ssh instance-1 (listで表示されたinstance名)
+  - 鍵は作られて保存される
+   - Your identification has been saved in /Users/kunihikotanaka/.ssh/google_compute_engine.
+   - Your public key has been saved in /Users/kunihikotanaka/.ssh/google_compute_engine.pub.
+- VSCodeのRemove Development add-onあるとファイルの編集が楽。.ssh/config編集するだけでOK
+
+![VSCode](https://cl.ly/0c70ec4b47b6/%2525E3%252582%2525B9%2525E3%252582%2525AF%2525E3%252583%2525AA%2525E3%252583%2525BC%2525E3%252583%2525B3%2525E3%252582%2525B7%2525E3%252583%2525A7%2525E3%252583%252583%2525E3%252583%252588%2525202019-09-26%25252018.41.38.png)
+
+---
+
+# 環境構築 on Ubuntu
+
+- dockerいれる
+ - https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+- sudoなしでdockerコマンド実行したい場合　http://iganari.hatenablog.com/entry/2018/07/09/183344
+ 
+- nvidia-docker入れる https://github.com/NVIDIA/nvidia-docker
+
+- docker-composeを入れる https://docs.docker.com/compose/install/
+
+---
+
+## Docker Imageのビルド
+
+- kaggleのrepositoryをダウンロードする(Docker image構築のため)
+  - git clone https://github.com/Kaggle/docker-python.git
+  - ./build --gpu
+    - すごい時間かかる
+
+---
+
+## GPUドライバのインストール
+
+- GPUドライバ周りインストール
+ - curl -O http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
+ - sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+ - sudo dpkg -i cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
+ - sudo apt update
+ - sudo apt install cuda cuda-drivers
+ - .bashrcに以下追加
+
+```   
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+```
+
+---
+
+- nvidia container runtime インストール
+ - sudo apt-get install nvidia-container-runtime
+
+- /etc/docker/daemon.json に以下を追記
+
+```json
+
+{
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+
+```
+
+- 再起動する
+  - sudo reboot
+
+- mlディレクトリとか適当に切ってdocker-compose.ymlファイルを置く
+
+```yaml
+
+version: '2.3'
+services:
+  app:
+    image:  kaggle/python-gpu-build:latest
+    volumes:
+      - ./notebooks/:/notebooks
+      - ./input/:/input
+      - ./src/:/src
+    runtime: nvidia
+    ports:
+      - "8888:8888"
+    command: bash -c "export LD_LIBRARY_PATH=/usr/local/cuda/lib64; pip install jupyter_contrib_nbextensions; pip install jupyter_nbextensions_configurator; jupyter contrib nbextension install --user; jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8888 --no-browser --allow-root"
+
+
+```
+
+---
+
+## 起動する
+
+- sudo docker-compose up (sudoじゃなくても実行できるようにしてるならsudoいらない)
+ - jupyter notebook起動してURLが出てくるので、GCPが起動しているIPに書き換えてアクセス
+  - おもむろにnotebookを作って !nvidia-smi を実行してみよう。Tesla T4とか出てきたらOK
+  - さらにNotebookで以下を実行してみよう。ログを読むとちゃんとGPUが使われていることが分かる
+    - mnist_cnn.pyはよくある手書きの数字を認識するやつ。cnnなので畳み込みニューラルネットワークを利用している
+    - 中身が気になったらjupyter notebookから開けるので開いてみよう
+  
+```shell
+!git clone https://github.com/keras-team/keras.git
+!python3 keras/examples/mnist_cnn.py
+```
